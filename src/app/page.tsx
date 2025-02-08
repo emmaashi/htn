@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,17 @@ export default function LoginForm() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isGuestLogin, setIsGuestLogin] = useState(false);
+    const [isBouncing, setIsBouncing] = useState(true);
     const router = useRouter();
+
+    // animated events logo
+    useEffect(() => {
+      const timeoutId = setTimeout(() => {
+          setIsBouncing(false);
+      }, 3000);
+      return () => clearTimeout(timeoutId);
+  }, []);
+
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
@@ -65,7 +76,17 @@ export default function LoginForm() {
                 <img src={logo.src} alt="Logo" className="h-16 mx-auto" />
             </div>
             <div className="mb-8 relative z-10">
-                <img src={events.src} alt="Events" className="h-28 w-[500px]" />
+              <motion.img
+                src={events.src}
+                alt="Events"
+                className="h-28 w-[500px]"
+                animate={isBouncing ? { y: [0, -18, 0] } : { y: 0 }}
+                transition={{
+                  y: isBouncing
+                    ? { repeat: Infinity, duration: 0.8, ease: "easeInOut" }
+                    : { duration: 0.5, ease: "easeOut" },
+                }}
+              />
             </div>
             <div className="border rounded-lg w-1/3 p-6 relative z-10 bg-white/40 backdrop-blur-sm">
                 <form
