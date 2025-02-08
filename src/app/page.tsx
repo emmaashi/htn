@@ -107,7 +107,7 @@ export default function LoginForm() {
                         />
                         <p className="text-xs text-muted-foreground mb-2">
                             Hint:{" "}
-                            <code className="bg-gray-100 rounded px-1 py-0.5 text-gray-800 font-mono text-sm">
+                            <code className="bg-gray-200 rounded px-1 py-0.5 text-gray-800 font-mono text-sm">
                                 hacker
                             </code>
                         </p>
@@ -129,7 +129,7 @@ export default function LoginForm() {
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                className="absolute right-0 top-0 h-full rounded-md p-0"
+                                className="absolute right-0 top-0 h-full rounded-md p-0 hover:bg-transparent"
                                 onClick={togglePasswordVisibility}
                             >
                                 {showPassword ? (
@@ -142,7 +142,7 @@ export default function LoginForm() {
                         </div>
                         <p className="text-xs text-muted-foreground mb-4">
                             Hint:{" "}
-                            <code className="bg-gray-100 rounded px-1 py-0.5 text-gray-800 font-mono text-sm">
+                            <code className="bg-gray-200 rounded px-1 py-0.5 text-gray-800 font-mono text-sm">
                                 htn2025
                             </code>
                         </p>
