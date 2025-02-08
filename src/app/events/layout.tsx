@@ -1,4 +1,7 @@
 import { SidebarProvider } from "@/components/ui/sidebar"
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function EventsLayout({
   children,
@@ -6,8 +9,10 @@ export default function EventsLayout({
   children: React.ReactNode
 }) {
   return (
-    <SidebarProvider>
-      {children}
-    </SidebarProvider>
+    <div className={inter.className}>
+      <SidebarProvider>
+        {children}
+      </SidebarProvider>
+    </div>
   )
 }

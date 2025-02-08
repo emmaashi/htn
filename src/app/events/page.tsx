@@ -96,7 +96,7 @@ export default function EventsPage() {
         defaultFilters={selectedFilters}
       />
       <div className="flex-1 p-4">
-        <h1 className="text-5xl font-bold text-left mb-4 ml-8 mt-4">Events</h1>
+        <h1 className="text-5xl font-bold text-left mb-4 ml-8 mt-10">Events</h1>
         <div className="flex items-center gap-x-4 ml-8">
           <Input
             type="text"
@@ -106,7 +106,7 @@ export default function EventsPage() {
             onChange={handleSearchChange}
           />
           <Select onValueChange={handleSortChange} defaultValue={sortBy}>
-            <SelectTrigger className="ml-52 h-10 w-36 text-left">
+            <SelectTrigger className="ml-36 h-10 w-36 text-left">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>

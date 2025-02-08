@@ -78,10 +78,10 @@ export default function LoginForm() {
                 />
             </div>
             {/* logos */}
-            <div className="mb-8 relative z-10 ">
+            <div className="mb-2 relative z-10 ">
                 <img src={icon.src} alt="Logo" className="h-28 mx-auto" />
             </div>
-            <div className="mb-8 relative z-10">
+            <div className="mb-7 relative z-10">
               <motion.img
                 src={events.src}
                 alt="Events"
@@ -94,7 +94,7 @@ export default function LoginForm() {
                 }}
               />
             </div>
-            <div className="border rounded-lg w-1/3 p-6 relative z-10 bg-white/40 backdrop-blur-sm">
+            <div className="border rounded-lg w-1/4 p-6 relative z-10 bg-white/40 backdrop-blur-sm">
                 <form
                     onSubmit={handleSubmit}
                     className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground items-start"
@@ -161,12 +161,12 @@ export default function LoginForm() {
                         Sign In
                     </Button>
                     <Button
-                        type="button"
-                        variant="link"
-                        onClick={handleGuestLogin}
-                        className="w-full underline"
+                      type="button"
+                      variant="link"
+                      onClick={handleGuestLogin}
+                      className="w-fit items-center ml-[87px] underline"
                     >
-                        Continue as Guest
+                      Continue as Guest
                     </Button>
                 </form>
             </div>
