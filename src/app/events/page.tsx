@@ -1,18 +1,21 @@
-// app/events/page.tsx
-'use client';
+"use client";
 
 import { useQuery } from "@apollo/client";
 import { GET_EVENTS } from "@/graphql/queries";
 import EventCard, { EventCardProps } from "./components/EventCard";
 import client from "@/graphql/client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { SidebarNavigation } from "./components/Sidebar";
+import { Input } from "@/components/ui/input";
 
 export default function EventsPage() {
   const [events, setEvents] = useState<EventCardProps[]>([]);
   const { loading, error, data } = useQuery(GET_EVENTS, { client });
   const [loggedIn, setLoggedIn] = useState<string | null>(null);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [allEvents, setAllEvents] = useState<EventCardProps[]>([]);
+  const totalEvents = allEvents.length;
 
   useEffect(() => {
     // Get login state from localStorage on component mount
@@ -20,30 +23,50 @@ export default function EventsPage() {
     setLoggedIn(storedLoggedIn);
   }, []);
 
-  useEffect(() => {
-    if (data) {
-      let filteredEvents = data.sampleEvents;
+  const filterEvents = useCallback(() => {
+    if (!data) return;
 
-      // Filter events based on login state
-      if (loggedIn === "guest") {
-        filteredEvents = filteredEvents.filter(
-          (event: EventCardProps) => event.permission === "public"
-        );
-      }
+    let initialEvents = data.sampleEvents;
 
-      // Apply event type filters
-      if (selectedFilters.length > 0) {
-        filteredEvents = filteredEvents.filter((event: EventCardProps) =>
-          selectedFilters.includes(event.event_type)
-        );
-      }
-
-      setEvents(filteredEvents);
+    if (loggedIn === "guest") {
+      initialEvents = initialEvents.filter(
+        (event: EventCardProps) => event.permission === "public"
+      );
     }
-  }, [data, loggedIn, selectedFilters]);
+
+    // make a copy for further filtering
+    let filteredEvents = [...initialEvents];
+
+    // searchbar
+    if (searchTerm) {
+      filteredEvents = filteredEvents.filter((event: EventCardProps) =>
+        event.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedFilters.length > 0) {
+      filteredEvents = filteredEvents.filter((event: EventCardProps) =>
+        selectedFilters.includes(event.event_type)
+      );
+    }
+
+    // default sort by start_time
+    filteredEvents.sort((a: EventCardProps, b: EventCardProps) => a.start_time - b.start_time);
+
+    setEvents(filteredEvents);
+    setAllEvents(initialEvents);
+  }, [data, loggedIn, selectedFilters, searchTerm]);
+
+  useEffect(() => {
+    filterEvents();
+  }, [data, loggedIn, selectedFilters, searchTerm, filterEvents]);
 
   const handleFilterChange = (filters: string[]) => {
     setSelectedFilters(filters);
+  };
+
+  const handleSearchChange = (e: any) => {
+    setSearchTerm(e.target.value);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -56,6 +79,15 @@ export default function EventsPage() {
         defaultFilters={selectedFilters}
       />
       <div className="flex-1 p-4">
+        <h1 className="text-4xl font-bold text-left mb-4 ml-8 mt-4">Events</h1>
+          <Input
+            type="text"
+            placeholder="Search events..."
+            className="p-3 border-2 rounded-xl h-12 ml-8 w-96"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+        <p className="ml-8 mt-2 mb-4">Showing {events.length} out of {totalEvents} events</p>
         {events.map((event: EventCardProps) => (
           <EventCard key={event.id} {...event} />
         ))}

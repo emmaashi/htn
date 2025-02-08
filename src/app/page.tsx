@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
-import logo from "@/app/assets/logo-24.png";
+import icon from "@/app/assets/icon.png";
 import events from "@/app/assets/events.png";
 import build from "@/app/assets/build.png";
 
@@ -52,6 +52,12 @@ export default function LoginForm() {
         setShowPassword(!showPassword);
     };
 
+    // copy login details
+    const copyToClipboard = (text: string) => {
+      navigator.clipboard.writeText(text)
+      toast.success(`Copied "${text}" to clipboard.`);
+    }
+    
     // permission passed to only display public events
     const handleGuestLogin = () => {
         setIsGuestLogin(true);
@@ -73,7 +79,7 @@ export default function LoginForm() {
             </div>
             {/* logos */}
             <div className="mb-8 relative z-10 ">
-                <img src={logo.src} alt="Logo" className="h-16 mx-auto" />
+                <img src={icon.src} alt="Logo" className="h-28 mx-auto" />
             </div>
             <div className="mb-8 relative z-10">
               <motion.img
@@ -107,7 +113,9 @@ export default function LoginForm() {
                         />
                         <p className="text-xs text-muted-foreground mb-2">
                             Hint:{" "}
-                            <code className="bg-gray-200 rounded px-1 py-0.5 text-gray-800 font-mono text-sm">
+                            <code 
+                              className="bg-gray-200 rounded px-1 py-0.5 text-gray-800 font-mono text-sm cursor-pointer"
+                              onClick={() => copyToClipboard("hacker")}>
                                 hacker
                             </code>
                         </p>
@@ -142,8 +150,10 @@ export default function LoginForm() {
                         </div>
                         <p className="text-xs text-muted-foreground mb-4">
                             Hint:{" "}
-                            <code className="bg-gray-200 rounded px-1 py-0.5 text-gray-800 font-mono text-sm">
-                                htn2025
+                            <code 
+                              className="bg-gray-200 rounded px-1 py-0.5 text-gray-800 font-mono text-sm cursor-pointer"  
+                              onClick={() => copyToClipboard("htn2025")}>
+                              htn2025
                             </code>
                         </p>
                     </div>

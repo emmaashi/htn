@@ -66,7 +66,7 @@ export default function EventCard({
     }: EventCardProps) {
     return (
         <Card
-            className={`group block rounded-2xl border-4 bg-white p-4 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg w-[60%] mx-auto mb-4
+            className={`group block rounded-2xl border-4 bg-white p-4 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg w-[95%] mx-auto mb-4
             ${eventTypeColors[event_type]}`}
         >
             <CardHeader>
