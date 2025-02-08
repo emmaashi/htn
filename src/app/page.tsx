@@ -1,101 +1,128 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
+
+export default function LoginForm() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isGuestLogin, setIsGuestLogin] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+
+    if (isGuestLogin) return; 
+
+    // hardcoded login details
+    if (username === "hacker" && password === "htn2025") {
+      toast.success("Login Successful!", {
+        description: "Public and private events are visible.",
+      });
+      localStorage.setItem("loggedIn", "true");
+      router.push("/events");
+    } 
+    else {
+      toast.error("Login Failed", {
+        description: "Incorrect username or password.",
+      });
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // permission passed to only display public events
+  const handleGuestLogin = () => {
+    setIsGuestLogin(true);
+    toast.success("Success!", {
+      description: "Public events are visibile.",
+    });
+    localStorage.setItem("loggedIn", "guest");
+    router.push("/events");
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <div className="flex justify-center items-center h-screen">
+      <div className="border rounded-lg w-96 p-6">
+        <form
+          onSubmit={handleSubmit}
+          className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground items-start"
+        >
+          <div className="w-full">
+            <Label htmlFor="username" className="text-sm">
+              Username
+            </Label>
+            <Input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter username"
+              className="rounded-md px-4 py-2 bg-inherit border mb-2"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <p className="text-xs text-muted-foreground mb-2">
+              Hint:{" "}
+              <code className="bg-gray-100 rounded px-1 py-0.5 text-gray-800 font-mono text-sm">
+                hacker
+              </code>
+            </p>
+          </div>
+          <div className="w-full">
+            <Label htmlFor="password" className="text-sm">
+              Password
+            </Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="rounded-md px-4 py-2 bg-inherit border mb-2"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-0 h-full rounded-md p-0"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? (
+                  <Eye className="h-4 w-4" />
+                ) : (
+                  <EyeOff className="h-4 w-4" />
+                )}
+                <span className="sr-only">Toggle password visibility</span>
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mb-4">
+              Hint:{" "}
+              <code className="bg-gray-100 rounded px-1 py-0.5 text-gray-800 font-mono text-sm">
+                htn2025
+              </code>
+            </p>
+          </div>
+          <Button type="submit" className="rounded-md w-full text-sm">
+            Sign In
+          </Button>
+          <Button
+            type="button"
+            variant="link"
+            onClick={handleGuestLogin}
+            className="w-full underline"
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            Continue as Guest
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }
