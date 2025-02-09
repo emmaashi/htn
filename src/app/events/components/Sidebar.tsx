@@ -2,11 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Calendar,
-  LogOut,
-  ChevronDown,
-} from "lucide-react";
+import { Calendar, LogOut, ChevronDown } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -57,7 +53,7 @@ export function SidebarNavigation({
     setFilters((prevFilters) =>
       prevFilters.includes(value)
         ? prevFilters.filter((f) => f !== value)
-        : [...prevFilters, value]
+        : [...prevFilters, value],
     );
   };
 
@@ -71,9 +67,7 @@ export function SidebarNavigation({
   };
 
   return (
-    <Sidebar
-      collapsible="offcanvas"
-    >
+    <Sidebar collapsible="offcanvas">
       <SidebarGroup>
         <div className="p-4 flex items-center space-x-2 justify-center">
           <img src={icon.src} className="h-16" />
@@ -84,7 +78,7 @@ export function SidebarNavigation({
             <SidebarMenuItem>
               <SidebarMenuButton
                 onClick={() => setOpen(!open)}
-                className={`rounded-lg hover:bg-gray-100 w-52 flex items-center justify-center ml-3 px-4 ${open ? 'bg-[#e2e3fb]' : ''}`}
+                className={`rounded-lg hover:bg-gray-100 w-52 flex items-center justify-center ml-3 px-4 ${open ? "bg-[#e2e3fb]" : ""}`}
               >
                 <Calendar className="w-4 h-4" />
                 <span>Events</span>
@@ -152,10 +146,7 @@ export function SidebarNavigation({
                         Cancel
                       </Button>
                     </DialogClose>
-                    <Button
-                      type="button"
-                      onClick={handleLogoutConfirm}
-                    >
+                    <Button type="button" onClick={handleLogoutConfirm}>
                       Log Out
                     </Button>
                   </DialogFooter>

@@ -2,18 +2,19 @@
 
 import { useQuery } from "@apollo/client";
 import { GET_EVENTS } from "@/graphql/queries";
-import EventCard, { EventCardProps } from "./components/EventCard";
 import client from "@/graphql/client";
 import { useEffect, useState, useCallback } from "react";
+import EventCard, { EventCardProps } from "./components/EventCard";
 import { SidebarNavigation } from "./components/Sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function EventsPage() {
   const [events, setEvents] = useState<EventCardProps[]>([]);
@@ -38,7 +39,7 @@ export default function EventsPage() {
 
     if (loggedIn === "guest") {
       initialEvents = initialEvents.filter(
-        (event: EventCardProps) => event.permission === "public"
+        (event: EventCardProps) => event.permission === "public",
       );
     }
 
@@ -48,23 +49,22 @@ export default function EventsPage() {
     // searchbar
     if (searchTerm) {
       filteredEvents = filteredEvents.filter((event: EventCardProps) =>
-        event.name.toLowerCase().includes(searchTerm.toLowerCase())
+        event.name.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
     if (selectedFilters.length > 0) {
       filteredEvents = filteredEvents.filter((event: EventCardProps) =>
-        selectedFilters.includes(event.event_type)
+        selectedFilters.includes(event.event_type),
       );
     }
 
     // sorting
-    // sorting
     filteredEvents.sort((a: EventCardProps, b: EventCardProps) => {
-        if (sortBy === "name") return a.name.localeCompare(b.name);
-        if (sortBy === "end_time") return a.end_time - b.end_time;
-        return a.start_time - b.start_time; // Default to start_time
-        });
+      if (sortBy === "name") return a.name.localeCompare(b.name);
+      if (sortBy === "end_time") return a.end_time - b.end_time;
+      return a.start_time - b.start_time;
+    });
 
     setEvents(filteredEvents);
     setAllEvents(initialEvents);
@@ -84,45 +84,53 @@ export default function EventsPage() {
 
   const handleSortChange = (val: string) => {
     setSortBy(val);
-  }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div className="flex">
-      <SidebarNavigation
-        onFilterChange={handleFilterChange}
-        defaultFilters={selectedFilters}
-      />
+    <div className="flex min-h-screen">
+      <div className="sticky top-0 h-screen">
+        <SidebarNavigation
+          onFilterChange={handleFilterChange}
+          defaultFilters={selectedFilters}
+        />
+      </div>
+
       <div className="flex-1 p-4">
-        <h1 className="text-5xl font-bold text-left mb-4 ml-8 mt-10">Events</h1>
-        <div className="flex items-center gap-x-4 ml-8">
+        <h1 className="text-5xl font-bold text-left mb-4 ml-16 mt-14">
+          Events
+        </h1>
+        <div className="flex items-center gap-x-4 ml-16">
           <Input
             type="text"
             placeholder="Search events..."
-            className="p-3 border-2 rounded-xl h-10 w-[800px]"
+            className="p-3 border-2 rounded-xl h-10 w-[790px]"
             value={searchTerm}
             onChange={handleSearchChange}
           />
           <Select onValueChange={handleSortChange} defaultValue={sortBy}>
-            <SelectTrigger className="ml-36 h-10 w-36 text-left">
+            <SelectTrigger className="ml-[101px] h-10 w-36 text-left">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="start_time" className="cursor-pointer">Start Time</SelectItem>
-              <SelectItem value="end_time" className="cursor-pointer">End Time</SelectItem>
-              <SelectItem value="name" className="cursor-pointer">Name</SelectItem>
+              <SelectItem value="start_time">Start Time</SelectItem>
+              <SelectItem value="end_time">End Time</SelectItem>
+              <SelectItem value="name">Name</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <p className="ml-8 mt-2 mb-4">
+        <p className="ml-16 mt-3 mb-4">
           Showing {events.length} out of {totalEvents} events
         </p>
-        {events.map((event: EventCardProps) => (
-          <EventCard key={event.id} {...event} />
-        ))}
+
+        <ScrollArea className="overflow-y-auto overflow-visible px-16">
+          {events.map((event: EventCardProps) => (
+            <EventCard key={event.id} {...event} />
+          ))}
+        </ScrollArea>
       </div>
     </div>
   );
