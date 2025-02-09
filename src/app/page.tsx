@@ -28,7 +28,7 @@ export default function LoginForm() {
     return () => clearTimeout(timeoutId);
   }, []);
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (isGuestLogin) return;

@@ -79,7 +79,7 @@ export default function EventsPage() {
     setSelectedFilters(filters);
   };
 
-  const handleSearchChange = (e: any) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
