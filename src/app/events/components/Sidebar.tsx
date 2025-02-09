@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Calendar, LogOut, ChevronDown } from "lucide-react";
 import {
   Sidebar,
-  SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,

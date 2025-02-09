@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import build from "@/app/assets/build.png";
 
 export default function EventsPage() {
   const [events, setEvents] = useState<EventCardProps[]>([]);
@@ -90,47 +91,57 @@ export default function EventsPage() {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div className="flex min-h-screen">
-      <div className="sticky top-0 h-screen">
-        <SidebarNavigation
-          onFilterChange={handleFilterChange}
-          defaultFilters={selectedFilters}
-        />
+    <div className="relative flex min-h-screen">
+      <div className="absolute inset-0">
+        <div
+          className="absolute inset-0 bg-no-repeat bg-center bg-contain bg-fixed"
+          style={{ backgroundImage: `url(${build.src})` }}
+        ></div>
+        <div className="absolute inset-0 bg-white/70"></div>
       </div>
 
-      <div className="flex-1 p-4">
-        <h1 className="text-5xl font-bold text-left mb-4 ml-16 mt-14">
-          Events
-        </h1>
-        <div className="flex items-center gap-x-4 ml-16">
-          <Input
-            type="text"
-            placeholder="Search events..."
-            className="p-3 border-2 rounded-xl h-10 w-[790px]"
-            value={searchTerm}
-            onChange={handleSearchChange}
+      <div className="relative flex w-full">
+        <div className="sticky top-0 h-screen">
+          <SidebarNavigation
+            onFilterChange={handleFilterChange}
+            defaultFilters={selectedFilters}
           />
-          <Select onValueChange={handleSortChange} defaultValue={sortBy}>
-            <SelectTrigger className="ml-[101px] h-10 w-36 text-left">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="start_time">Start Time</SelectItem>
-              <SelectItem value="end_time">End Time</SelectItem>
-              <SelectItem value="name">Name</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
-        <p className="ml-16 mt-3 mb-4">
-          Showing {events.length} out of {totalEvents} events
-        </p>
+        <div className="flex-1 p-4 min-h-screen">
+          <h1 className="text-5xl font-bold text-left mb-4 ml-16 mt-14">
+            Events
+          </h1>
+          <div className="flex items-center gap-x-4 ml-16">
+            <Input
+              type="text"
+              placeholder="Search events..."
+              className="p-3 border-2 rounded-xl h-10 w-[790px]"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+            <Select onValueChange={handleSortChange} defaultValue={sortBy}>
+              <SelectTrigger className="ml-[101px] h-10 w-36 text-left">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="start_time">Start Time</SelectItem>
+                <SelectItem value="end_time">End Time</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-        <ScrollArea className="overflow-y-auto overflow-visible px-16">
-          {events.map((event: EventCardProps) => (
-            <EventCard key={event.id} {...event} />
-          ))}
-        </ScrollArea>
+          <p className="ml-16 mt-3 mb-4">
+            Showing {events.length} out of {totalEvents} events
+          </p>
+
+          <ScrollArea className="overflow-y-auto overflow-visible px-16">
+            {events.map((event: EventCardProps) => (
+              <EventCard key={event.id} {...event} />
+            ))}
+          </ScrollArea>
+        </div>
       </div>
     </div>
   );
