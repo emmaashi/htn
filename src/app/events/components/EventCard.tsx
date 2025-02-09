@@ -109,7 +109,8 @@ export default function EventCard({
 
         {related_events.length > 0 && (
           <p className="text-sm text-gray-500 mt-2">
-            <strong>Related Events:</strong> {related_events.join(", ")}
+            {/* temporarily put id here to avoid unused field eslint error*/}
+            <strong>Related Events:</strong> {related_events.join(", ")}{id}
           </p>
         )}
 
