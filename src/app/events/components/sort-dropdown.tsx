@@ -6,14 +6,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface SortDropdownProps {
-  sortBy: string;
-  onSortChange: (value: string) => void;
-}
+type SortDropdownProps = {
+    onSortChange: (val: string) => void;
+    sortBy: string;
+};
 
 export function SortDropdown({ sortBy, onSortChange }: SortDropdownProps) {
   return (
-    <Select value={sortBy} onValueChange={onSortChange}>
+    <Select onValueChange={onSortChange} defaultValue={sortBy}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Sort by" />
       </SelectTrigger>
