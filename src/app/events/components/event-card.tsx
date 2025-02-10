@@ -138,7 +138,8 @@ export default function EventCard({
 
           {related_events.length > 0 && (
             <p className="text-gray-500 mt-1">
-              {/* <strong>Related Events:</strong> {related_events.join(", ")} */}
+              <strong>Related Events:</strong> {related_events.join(", ")}
+              , {id} {/* temporarily here bc of eslint error */}
               {(public_url || private_url) && !speakers.length && (
                 <span className="ml-2">
                   {public_url && (
