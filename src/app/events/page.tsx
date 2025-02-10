@@ -5,8 +5,8 @@ import { useEvents } from "./actions/useEvents";
 import { useEventFilters } from "./actions/useEventFilters";
 import { SidebarNavigation } from "./components/Sidebar";
 import EventsList from "./components/events-list";
-import SearchBar from "./components/search-bar";
-import SortDropdown from "./components/sort-dropdown";
+import { SearchBar } from "./components/search-bar";
+import { SortDropdown } from "./components/sort-dropdown";
 import build from "@/app/assets/build.png";
 
 export default function EventsPage() {
@@ -19,12 +19,8 @@ export default function EventsPage() {
     setLoggedIn(storedLoggedIn);
   }, []);
 
-  const {
-    filterEvents,
-    setSelectedFilters,
-    setSortBy,
-    totalAvailableEvents,
-  } = useEventFilters(events, loggedIn, searchTerm);
+  const { filterEvents, setSelectedFilters, setSortBy, totalAvailableEvents } =
+    useEventFilters(events, loggedIn, searchTerm);
   const filteredEvents = filterEvents();
 
   if (loading) return <p>Loading...</p>;

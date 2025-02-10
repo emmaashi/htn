@@ -1,6 +1,20 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, ExternalLinkIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  CalendarIcon,
+  ClockIcon,
+  UsersIcon,
+  ExternalLinkIcon,
+} from "lucide-react";
 
 // Colour palette for event types htn 2024
 const eventTypeColors: Record<string, string> = {
@@ -39,22 +53,47 @@ export type EventCardProps = {
   speakers?: TSpeaker[];
   public_url?: string;
   private_url?: string;
-  related_events?: number[];
+  related_events?: Array<{ id: number; name: string }>;
   permission: TPermission;
 };
 
 const formatDate = (timestamp: number) => {
   const date = new Date(timestamp);
-  const day = date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
+    year: "numeric",
   });
-  const time = date.toLocaleTimeString("en-US", {
+};
+
+const formatTime = (timestamp: number) => {
+  const date = new Date(timestamp);
+  return date.toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
   });
-  return `${day} at ${time}`;
+};
+
+const LINE_HEIGHT = 1.5;
+const MAX_LINES = 3;
+
+const useLineClamp = (text: string | undefined, maxLines: number) => {
+  const [clamped, setClamped] = useState(true);
+  const [showButton, setShowButton] = useState(false);
+  const containerRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current && text) {
+      const lineHeight =
+        Number.parseFloat(getComputedStyle(containerRef.current).lineHeight) ||
+        LINE_HEIGHT * 16;
+      const maxHeight = lineHeight * maxLines;
+      setShowButton(containerRef.current.scrollHeight > maxHeight);
+    }
+  }, [text, maxLines]);
+
+  return { clamped, setClamped, showButton, containerRef };
 };
 
 export default function EventCard({
@@ -70,139 +109,131 @@ export default function EventCard({
   related_events = [],
   permission,
 }: EventCardProps) {
+  const { clamped, setClamped, showButton, containerRef } = useLineClamp(
+    description,
+    MAX_LINES,
+  );
+
   return (
     <Card
-      className={`group block rounded-2xl border-4 bg-white p-4 mb-6 shadow-md transition-all duration-300 
-            hover:shadow-lg ${eventTypeColors[event_type]} ${eventShadowColors[event_type]}`}
+      className={`group block rounded-2xl ${eventTypeColors[event_type]} ${eventShadowColors[event_type]} transition-all duration-300 hover:shadow-lg w-full mb-4`}
     >
-      <CardHeader>
-        <CardTitle className="text-xl font-bold mb-2">{name}</CardTitle>
-        <div className="flex items-center space-x-2">
-          <Badge
-            variant="outline"
-            className={`rounded-full px-3 py-1 font-semibold ${eventTypeColors[event_type]}`}
-          >
-            {eventTypeLabels[event_type]}
-          </Badge>
-
-          <Badge
-            variant="outline"
-            className="rounded-full px-3 py-1 text-muted-foreground font-medium"
-          >
-            {permission === "private" ? "Private" : "Public"}
-          </Badge>
-          <p className="text-gray-600 text-sm font-semibold">
-            <CalendarIcon className="inline-block h-4 w-4 mr-1" />
-            {formatDate(start_time)} - {formatDate(end_time)}
-          </p>
+      <CardHeader className="space-y-1 pb-2">
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <CardTitle className="text-2xl font-bold tracking-tight mb-2">
+              {name}
+            </CardTitle>
+            <div className="flex flex-wrap gap-2">
+              <Badge
+                variant="outline"
+                className={`rounded-full px-3 py-1 font-semibold ${eventTypeColors[event_type]}`}
+              >
+                {eventTypeLabels[event_type]}
+              </Badge>
+              <Badge
+                variant="outline"
+                className="rounded-full px-3 py-1 text-muted-foreground font-medium"
+              >
+                {permission === "private" ? "Private" : "Public"}
+              </Badge>
+            </div>
+          </div>
         </div>
       </CardHeader>
+      <CardContent className="space-y-3 pt-0">
+        <div className="flex flex-col space-y-1 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4" />
+            <time dateTime={new Date(start_time).toISOString()}>
+              {formatDate(start_time)}
+            </time>
+          </div>
+          <div className="flex items-center gap-2">
+            <ClockIcon className="h-4 w-4" />
+            <span>
+              {formatTime(start_time)} - {formatTime(end_time)}
+            </span>
+          </div>
+        </div>
 
-      <CardContent>
-        {description && <p className="text-gray-700">{description}</p>}
-
-        <div className="mt-2 text-sm">
-          {speakers.length > 0 && (
-            <p className="text-gray-500">
-              <strong>Speakers:</strong>{" "}
-              {speakers.map((s) => s.name).join(", ")}
-              {(public_url || private_url) && (
-                <span className="ml-2">
-                  {public_url && (
-                    <a
-                      href={public_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline inline-flex items-center"
-                    >
-                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
-                      Public
-                    </a>
-                  )}
-                  {public_url && private_url && <span className="mx-1">|</span>}
-                  {private_url && (
-                    <a
-                      href={private_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline inline-flex items-center"
-                    >
-                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
-                      Private
-                    </a>
-                  )}
-                </span>
-              )}
+        {description && (
+          <div>
+            <p
+              ref={containerRef}
+              className={`text-sm text-muted-foreground ${clamped ? `line-clamp-${MAX_LINES}` : ""}`}
+            >
+              {description}
             </p>
-          )}
-
-          {related_events.length > 0 && (
-            <p className="text-gray-500 mt-1">
-              <strong>Related Events:</strong> {related_events.join(", ")}
-              , {id} {/* temporarily here bc of eslint error */}
-              {(public_url || private_url) && !speakers.length && (
-                <span className="ml-2">
-                  {public_url && (
-                    <a
-                      href={public_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline inline-flex items-center"
-                    >
-                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
-                      Public
-                    </a>
-                  )}
-                  {public_url && private_url && <span className="mx-1">|</span>}
-                  {private_url && (
-                    <a
-                      href={private_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline inline-flex items-center"
-                    >
-                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
-                      Private
-                    </a>
-                  )}
-                </span>
-              )}
-            </p>
-          )}
-
-          {!speakers.length &&
-            !related_events.length &&
-            (public_url || private_url) && (
-              <p className="text-gray-500">
-                <span>
-                  {public_url && (
-                    <a
-                      href={public_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline inline-flex items-center"
-                    >
-                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
-                      Public Event Link
-                    </a>
-                  )}
-                  {public_url && private_url && <span className="mx-1">|</span>}
-                  {private_url && (
-                    <a
-                      href={private_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline inline-flex items-center"
-                    >
-                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
-                      Private Event Link
-                    </a>
-                  )}
-                </span>
-              </p>
+            {showButton && (
+              <Button
+                variant="link"
+                className="h-auto p-0 text-sm"
+                onClick={() => setClamped(!clamped)}
+              >
+                {clamped ? "Read more" : "Show less"}
+              </Button>
             )}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <UsersIcon className="h-4 w-4" />
+            <div className="flex flex-wrap gap-2">
+              {speakers.map((speaker, index) => (
+                <Badge key={index} variant="secondary">
+                  {speaker.name}
+                </Badge>
+              ))}
+            </div>
+          </div>
+          {(public_url || private_url) && (
+            <div className="flex gap-2 ml-auto">
+              {public_url && (
+                <a
+                  href={public_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-sm text-primary hover:underline"
+                >
+                  Public Link
+                  <ExternalLinkIcon className="ml-1 h-4 w-4" />
+                </a>
+              )}
+              {private_url && (
+                <a
+                  href={private_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-sm text-primary hover:underline"
+                >
+                  Private Link
+                  <ExternalLinkIcon className="ml-1 h-4 w-4" />
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </CardContent>
+      {related_events.length > 0 && (
+        <CardFooter className="border-t pt-3">
+          <div className="w-full">
+            <p className="text-sm font-medium mb-2">Related Events:</p>
+            <div className="flex flex-wrap gap-2">
+              {related_events.map((event) => (
+                <Badge
+                  variant="outline"
+                  className="cursor-pointer transition-colors hover:border-primary hover:text-primary"
+                >
+                  {event.id}
+                  <ExternalLinkIcon className="ml-1 h-3 w-3" />
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </CardFooter>
+      )}
     </Card>
   );
 }
