@@ -1,39 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Eye, EyeOff } from "lucide-react";
 import icon from "@/app/assets/icon.png";
-import events from "@/app/assets/events.png";
 import build from "@/app/assets/build.png";
+import { EventsLogo } from "./login/components/events-logo";
+import { LoginFormFields } from "./login/components/login-form";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [isGuestLogin, setIsGuestLogin] = useState(false);
-  const [isBouncing, setIsBouncing] = useState(true);
   const router = useRouter();
-
-  // animated events logo
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setIsBouncing(false);
-    }, 3000);
-    return () => clearTimeout(timeoutId);
-  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (isGuestLogin) return;
-
-    // hardcoded login details
     if (username === "hacker" && password === "htn2025") {
       toast.success("Login Successful!", {
         description: "Public and private events are visible.",
@@ -47,17 +31,11 @@ export default function LoginForm() {
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  // copy login details
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success(`Copied "${text}" to clipboard.`);
   };
 
-  // permission passed to only display public events
   const handleGuestLogin = () => {
     setIsGuestLogin(true);
     toast.success("Success!", {
@@ -76,102 +54,40 @@ export default function LoginForm() {
           className="w-full h-full object-cover opacity-30"
         />
       </div>
-      {/* logos */}
       <div className="mb-2 relative z-10 ">
         <img src={icon.src} alt="Logo" className="h-28 mx-auto" />
       </div>
       <div className="mb-7 relative z-10">
-        <motion.img
-          src={events.src}
-          alt="Events"
-          className="h-28 w-[500px]"
-          animate={isBouncing ? { y: [0, -18, 0] } : { y: 0 }}
-          transition={{
-            y: isBouncing
-              ? { repeat: Infinity, duration: 0.8, ease: "easeInOut" }
-              : { duration: 0.5, ease: "easeOut" },
-          }}
-        />
+        <EventsLogo />
       </div>
       <div className="border rounded-lg w-1/4 p-6 relative z-10 bg-white/45 backdrop-blur-sm shadow-md hover:shadow-lg transition-shadow duration-300">
         <form
           onSubmit={handleSubmit}
           className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground items-start"
         >
-          <div className="w-full">
-            <Label htmlFor="username" className="text-sm">
-              Username
-            </Label>
-            <Input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter username"
-              className="rounded-md px-4 py-2 bg-inherit border border-gray-300 mb-2"
-            />
-            <p className="text-xs text-muted-foreground mb-2">
-              Hint:{" "}
-              <code
-                className="bg-gray-300 rounded px-1 py-0.5 text-gray-800 font-mono text-sm cursor-pointer"
-                onClick={() => copyToClipboard("hacker")}
-              >
-                hacker
-              </code>
-            </p>
-          </div>
-          <div className="w-full">
-            <Label htmlFor="password" className="text-sm">
-              Password
-            </Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="rounded-md px-4 py-2 bg-inherit border border-gray-300 mb-2"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-0 top-0 h-full rounded-md p-0 hover:bg-transparent"
-                onClick={togglePasswordVisibility}
-              >
-                {showPassword ? (
-                  <Eye className="h-4 w-4" />
-                ) : (
-                  <EyeOff className="h-4 w-4" />
-                )}
-                <span className="sr-only">Toggle password visibility</span>
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Hint:{" "}
-              <code
-                className="bg-gray-300 rounded px-1 py-0.5 text-gray-800 font-mono text-sm cursor-pointer"
-                onClick={() => copyToClipboard("htn2025")}
-              >
-                htn2025
-              </code>
-            </p>
-          </div>
+          <LoginFormFields
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+            copyToClipboard={copyToClipboard}
+          />
           <Button
             type="submit"
             className="rounded-md w-full text-sm hover:bg-[#ADB2F3]"
           >
             Sign In
           </Button>
-          <Button
-            type="button"
-            variant="link"
-            onClick={handleGuestLogin}
-            className="w-fit items-center ml-[87px] underline"
-          >
-            Continue as Guest
-          </Button>
+          <div className="flex justify-center w-full mt-2">
+            <Button
+              type="button"
+              variant="link"
+              onClick={handleGuestLogin}
+              className="underline"
+            >
+              Continue as Guest
+            </Button>
+          </div>
         </form>
       </div>
     </div>

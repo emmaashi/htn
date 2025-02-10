@@ -80,7 +80,9 @@ export function SidebarNavigation({
                 className={`rounded-lg hover:bg-gray-100 w-52 flex items-center justify-center ml-3 px-4 ${open ? "bg-[#e2e3fb]" : ""}`}
               >
                 <Calendar className="w-4 h-4" />
-                <span>Events</span>
+                <span>
+                  <b>Events</b>
+                </span>
                 <ChevronDown
                   className={`h-4 w-4 transition-transform duration-200 ${
                     open ? "rotate-180" : ""
@@ -128,8 +130,10 @@ export function SidebarNavigation({
                     className={`rounded-lg hover:bg-gray-100 w-52 flex justify-center px-4 cursor-pointer`}
                     onClick={handleLogoutClick}
                   >
-                    <LogOut className="w-4 h-4 -ml-8" />
-                    <span>Log out</span>
+                    <LogOut className="w-4 h-4 -ml-[26px]" />
+                    <span>
+                      <b>Log out</b>
+                    </span>
                   </SidebarMenuButton>
                 </DialogTrigger>
                 <DialogContent>
