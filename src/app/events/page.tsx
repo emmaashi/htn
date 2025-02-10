@@ -12,6 +12,7 @@ import build from "@/app/assets/build.png";
 export default function EventsPage() {
   const { loading, error, events } = useEvents();
   const [loggedIn, setLoggedIn] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const storedLoggedIn = localStorage.getItem("loggedIn");
@@ -20,11 +21,10 @@ export default function EventsPage() {
 
   const {
     filterEvents,
-    setSearchTerm,
     setSelectedFilters,
     setSortBy,
     totalAvailableEvents,
-  } = useEventFilters(events, loggedIn);
+  } = useEventFilters(events, loggedIn, searchTerm);
   const filteredEvents = filterEvents();
 
   if (loading) return <p>Loading...</p>;
@@ -54,7 +54,7 @@ export default function EventsPage() {
           </h1>
           <div className="flex items-center gap-x-4 ml-16">
             <SearchBar
-              searchTerm={""}
+              searchTerm={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <SortDropdown sortBy={"start_time"} onSortChange={setSortBy} />

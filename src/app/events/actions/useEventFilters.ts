@@ -4,8 +4,8 @@ import { EventCardProps } from "@/app/events/components/event-card";
 export function useEventFilters(
   events: EventCardProps[],
   loggedIn: string | null,
+  searchTerm: string,
 ) {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>("start_time");
 
@@ -39,7 +39,6 @@ export function useEventFilters(
 
   return {
     filterEvents,
-    setSearchTerm,
     setSelectedFilters,
     setSortBy,
     totalAvailableEvents: availableEvents.length,

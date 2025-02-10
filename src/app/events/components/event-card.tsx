@@ -101,43 +101,106 @@ export default function EventCard({
       <CardContent>
         {description && <p className="text-gray-700">{description}</p>}
 
-        {speakers.length > 0 && (
-          <p className="text-sm text-gray-500 mt-2">
-            <strong>Speakers:</strong> {speakers.map((s) => s.name).join(", ")}
-          </p>
-        )}
+        <div className="mt-2 text-sm">
+          {speakers.length > 0 && (
+            <p className="text-gray-500">
+              <strong>Speakers:</strong>{" "}
+              {speakers.map((s) => s.name).join(", ")}
+              {(public_url || private_url) && (
+                <span className="ml-2">
+                  {public_url && (
+                    <a
+                      href={public_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline inline-flex items-center"
+                    >
+                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
+                      Public
+                    </a>
+                  )}
+                  {public_url && private_url && <span className="mx-1">|</span>}
+                  {private_url && (
+                    <a
+                      href={private_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline inline-flex items-center"
+                    >
+                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
+                      Private
+                    </a>
+                  )}
+                </span>
+              )}
+            </p>
+          )}
 
-        {related_events.length > 0 && (
-          <p className="text-sm text-gray-500 mt-2">
-            {/* temporarily put id here to avoid unused field eslint error*/}
-            <strong>Related Events:</strong> {related_events.join(", ")}
-            {id}
-          </p>
-        )}
+          {related_events.length > 0 && (
+            <p className="text-gray-500 mt-1">
+              {/* <strong>Related Events:</strong> {related_events.join(", ")} */}
+              {(public_url || private_url) && !speakers.length && (
+                <span className="ml-2">
+                  {public_url && (
+                    <a
+                      href={public_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline inline-flex items-center"
+                    >
+                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
+                      Public
+                    </a>
+                  )}
+                  {public_url && private_url && <span className="mx-1">|</span>}
+                  {private_url && (
+                    <a
+                      href={private_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline inline-flex items-center"
+                    >
+                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
+                      Private
+                    </a>
+                  )}
+                </span>
+              )}
+            </p>
+          )}
 
-        {public_url && (
-          <a
-            href={public_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-blue-600 mt-2 flex items-center hover:underline"
-          >
-            <ExternalLinkIcon className="inline-block h-4 w-4 mr-1" />
-            Public Event Link
-          </a>
-        )}
-
-        {private_url && (
-          <a
-            href={private_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-blue-600 mt-2 flex items-center hover:underline"
-          >
-            <ExternalLinkIcon className="inline-block h-4 w-4 mr-1" />
-            Private Event Link
-          </a>
-        )}
+          {!speakers.length &&
+            !related_events.length &&
+            (public_url || private_url) && (
+              <p className="text-gray-500">
+                <span>
+                  {public_url && (
+                    <a
+                      href={public_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline inline-flex items-center"
+                    >
+                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
+                      Public Event Link
+                    </a>
+                  )}
+                  {public_url && private_url && <span className="mx-1">|</span>}
+                  {private_url && (
+                    <a
+                      href={private_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline inline-flex items-center"
+                    >
+                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
+                      Private Event Link
+                    </a>
+                  )}
+                </span>
+              </p>
+            )}
+        </div>
       </CardContent>
     </Card>
   );
