@@ -138,24 +138,23 @@ export default function EventCard({
               </Badge>
             </div>
           </div>
+          <div className="text-right text-sm text-gray-700">
+            <div className="flex items-center justify-end space-x-1">
+              <CalendarIcon className="h-3 w-3" />
+              <time dateTime={new Date(start_time).toISOString()}>
+                {formatDate(start_time)}
+              </time>
+            </div>
+            <div className="flex items-center justify-end space-x-1 mt-1">
+              <ClockIcon className="h-3 w-3" />
+              <span>
+                {formatTime(start_time)} - {formatTime(end_time)}
+              </span>
+            </div>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-3 pt-0">
-        <div className="flex flex-col space-y-1 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4" />
-            <time dateTime={new Date(start_time).toISOString()}>
-              {formatDate(start_time)}
-            </time>
-          </div>
-          <div className="flex items-center gap-2">
-            <ClockIcon className="h-4 w-4" />
-            <span>
-              {formatTime(start_time)} - {formatTime(end_time)}
-            </span>
-          </div>
-        </div>
-
         {description && (
           <div>
             <p
@@ -216,25 +215,26 @@ export default function EventCard({
         </div>
       </CardContent>
       {related_events.length > 0 && (
-  <CardFooter className="border-t pt-3">
-    <div className="w-full">
-      <p className="text-sm font-medium mb-2">Related Events:</p>
-      <div className="flex flex-wrap gap-2">
-        {related_events.map((event) => (
-          <Link key={event.id} href={`/events/${event.id}`} passHref>
-            <Badge
-              variant="outline"
-              className="cursor-pointer transition-colors hover:border-primary hover:text-primary"
-            >
-              {event.name} {/* ✅ Display Event Name Instead of Just ID */}
-              <ExternalLinkIcon className="ml-1 h-3 w-3" />
-            </Badge>
-          </Link>
-        ))}
-      </div>
-    </div>
-  </CardFooter>
-)}
+        <CardFooter className="border-t pt-3">
+          <div className="w-full">
+            <p className="text-sm font-medium mb-2">Related Events:</p>
+            <div className="flex flex-wrap gap-2">
+              {related_events.map((event) => (
+                <Link key={event.id} href={`/events/${event.id}`} passHref>
+                  <Badge
+                    variant="outline"
+                    className="cursor-pointer transition-colors hover:border-primary hover:text-primary"
+                  >
+                    {event.name}{" "}
+                    {/* ✅ Display Event Name Instead of Just ID */}
+                    <ExternalLinkIcon className="ml-1 h-3 w-3" />
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </CardFooter>
+      )}
     </Card>
   );
 }
