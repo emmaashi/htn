@@ -55,6 +55,7 @@ export type EventCardProps = {
   private_url?: string;
   related_events?: Array<{ id: number; name: string }>;
   permission: TPermission;
+  allEvents: EventCardProps[];
 };
 
 const formatDate = (timestamp: number) => {
@@ -97,7 +98,6 @@ const useLineClamp = (text: string | undefined, maxLines: number) => {
 };
 
 export default function EventCard({
-  id,
   name,
   event_type,
   start_time,
@@ -113,7 +113,6 @@ export default function EventCard({
     description,
     MAX_LINES,
   );
-
   return (
     <Card
       className={`group block rounded-2xl ${eventTypeColors[event_type]} ${eventShadowColors[event_type]} transition-all duration-300 hover:shadow-lg w-full mb-4`}
@@ -217,23 +216,25 @@ export default function EventCard({
         </div>
       </CardContent>
       {related_events.length > 0 && (
-        <CardFooter className="border-t pt-3">
-          <div className="w-full">
-            <p className="text-sm font-medium mb-2">Related Events:</p>
-            <div className="flex flex-wrap gap-2">
-              {related_events.map((event) => (
-                <Badge
-                  variant="outline"
-                  className="cursor-pointer transition-colors hover:border-primary hover:text-primary"
-                >
-                  {event.id}
-                  <ExternalLinkIcon className="ml-1 h-3 w-3" />
-                </Badge>
-              ))}
-            </div>
-          </div>
-        </CardFooter>
-      )}
+  <CardFooter className="border-t pt-3">
+    <div className="w-full">
+      <p className="text-sm font-medium mb-2">Related Events:</p>
+      <div className="flex flex-wrap gap-2">
+        {related_events.map((event) => (
+          <Link key={event.id} href={`/events/${event.id}`} passHref>
+            <Badge
+              variant="outline"
+              className="cursor-pointer transition-colors hover:border-primary hover:text-primary"
+            >
+              {event.name} {/* ✅ Display Event Name Instead of Just ID */}
+              <ExternalLinkIcon className="ml-1 h-3 w-3" />
+            </Badge>
+          </Link>
+        ))}
+      </div>
+    </div>
+  </CardFooter>
+)}
     </Card>
   );
 }
