@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useEvents } from "./actions/useEvents";
 import { useEventFilters } from "./actions/useEventFilters";
-import { SidebarNavigation } from "./components/sidebar";
+import { SidebarNavigation } from "./components/Sidebar";
 import EventsList from "./components/events-list";
 import SearchBar from "./components/search-bar";
 import SortDropdown from "./components/sort-dropdown";
