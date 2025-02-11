@@ -113,7 +113,7 @@ export default function EventCard({
   const { events } = useEvents();
 
   // map related event IDs to actual event objects
-  const relatedEventNames = related_events
+  const relatedEvents = related_events
     .map((eventId) =>
       events.find((event: EventCardProps) => event.id === eventId),
     ) // find the event by it's id
@@ -140,6 +140,14 @@ export default function EventCard({
               >
                 {permission === "private" ? "Private" : "Public"}
               </Badge>
+              <UsersIcon className="mt-1 h-4 w-4" />
+              <div className="flex flex-wrap gap-2">
+                {speakers.map((speaker, index) => (
+                  <Badge key={index} variant="secondary">
+                    {speaker.name}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </div>
           <div className="text-right text-sm text-gray-700">
@@ -185,69 +193,54 @@ export default function EventCard({
             )}
           </div>
         )}
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2 mb-2">
-              <UsersIcon className="h-4 w-4" />
-              <div className="flex flex-wrap gap-2">
-                {speakers.map((speaker, index) => (
-                  <Badge key={index} variant="secondary">
-                    {speaker.name}
-                  </Badge>
-                ))}
-              </div>
+
+        <div className="flex gap-2">
+          {(public_url || private_url) && (
+            <div className="flex gap-2">
+              {public_url && (
+                <a
+                  href={public_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-sm text-primary hover:underline"
+                >
+                  Public Link
+                  <ExternalLinkIcon className="ml-1 h-4 w-4" />
+                </a>
+              )}
+              {private_url && (
+                <a
+                  href={private_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-sm text-primary hover:underline"
+                >
+                  Private Link
+                  <ExternalLinkIcon className="ml-1 h-4 w-4" />
+                </a>
+              )}
             </div>
-            <div className="flex items-center gap-2">
-              {(public_url || private_url) && (
-                <div className="flex gap-2">
-                  {public_url && (
-                    <a
-                      href={public_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-sm text-primary hover:underline"
-                    >
-                      Public Link
-                      <ExternalLinkIcon className="ml-1 h-4 w-4" />
-                    </a>
-                  )}
-                  {private_url && (
-                    <a
-                      href={private_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-sm text-primary hover:underline"
-                    >
-                      Private Link
-                      <ExternalLinkIcon className="ml-1 h-4 w-4" />
-                    </a>
-                  )}
-                </div>
-              )}
-          </div>
+          )}
         </div>
-        <Separator/>
-        {relatedEventNames.length > 0 && (
-                <div className="flex items-center gap-2 mt-4">
-                  <span className="text-sm font-medium">Related Events:</span>
-                  <div className="flex flex-wrap gap-2">
-                    {relatedEventNames.map((event) => (
-                      <Link
-                        key={event?.id}
-                        href={`/events/${event?.id}`}
-                        passHref
-                      >
-                        <Badge
-                          variant="outline"
-                          className="cursor-pointer transition-colors hover:border-primary hover:text-primary"
-                        >
-                          {event?.name}
-                          <ExternalLinkIcon className="ml-1 h-3 w-3" />
-                        </Badge>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
+        <Separator />
+        {relatedEvents.length > 0 && (
+          <div className="flex items-center gap-2 mt-4">
+            <span className="text-sm font-medium">Related Events:</span>
+            <div className="flex flex-wrap gap-2">
+              {relatedEvents.map((event) => (
+                <Link key={event?.id} href={`/events/${event?.id}`} passHref>
+                  <Badge
+                    variant="outline"
+                    className="cursor-pointer transition-colors hover:border-primary hover:text-primary"
+                  >
+                    {event?.name}
+                    <ExternalLinkIcon className="ml-1 h-3 w-3" />
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
