@@ -5,12 +5,14 @@ import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   CalendarIcon,
   ClockIcon,
   UsersIcon,
   ExternalLinkIcon,
 } from "lucide-react";
+import { useEvents } from "../actions/useEvents";
 
 // Colour palette for event types htn 2024
 const eventTypeColors: Record<string, string> = {
@@ -49,7 +51,7 @@ export type EventCardProps = {
   speakers?: TSpeaker[];
   public_url?: string;
   private_url?: string;
-  related_events?: Array<{ id: number; name: string }>;
+  related_events?: number[];
   permission: TPermission;
 };
 
@@ -107,6 +109,15 @@ export default function EventCard({
 }: EventCardProps) {
   const { clamped, toggleClamped, showButton, containerRef } =
     useLineClamp(description);
+
+  const { events } = useEvents();
+
+  // map related event IDs to actual event objects
+  const relatedEventNames = related_events
+    .map((eventId) =>
+      events.find((event: EventCardProps) => event.id === eventId),
+    ) // find the event by it's id
+    .filter((event) => event !== undefined); // remove undefined events
 
   return (
     <Card
@@ -174,9 +185,8 @@ export default function EventCard({
             )}
           </div>
         )}
-        <div className="border-t pt-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mb-2">
               <UsersIcon className="h-4 w-4" />
               <div className="flex flex-wrap gap-2">
                 {speakers.map((speaker, index) => (
@@ -213,21 +223,24 @@ export default function EventCard({
                   )}
                 </div>
               )}
-              {related_events.length > 0 && (
-                <div className="flex items-center gap-2">
+          </div>
+        </div>
+        <Separator/>
+        {relatedEventNames.length > 0 && (
+                <div className="flex items-center gap-2 mt-4">
                   <span className="text-sm font-medium">Related Events:</span>
                   <div className="flex flex-wrap gap-2">
-                    {related_events.map((event) => (
+                    {relatedEventNames.map((event) => (
                       <Link
-                        key={event.id}
-                        href={`/events/${event.id}`}
+                        key={event?.id}
+                        href={`/events/${event?.id}`}
                         passHref
                       >
                         <Badge
                           variant="outline"
                           className="cursor-pointer transition-colors hover:border-primary hover:text-primary"
                         >
-                          {event.name}
+                          {event?.name}
                           <ExternalLinkIcon className="ml-1 h-3 w-3" />
                         </Badge>
                       </Link>
@@ -235,9 +248,6 @@ export default function EventCard({
                   </div>
                 </div>
               )}
-            </div>
-          </div>
-        </div>
       </CardContent>
     </Card>
   );
