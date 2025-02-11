@@ -42,5 +42,6 @@ export function useEventFilters(
     setSelectedFilters,
     setSortBy,
     totalAvailableEvents: availableEvents.length,
+    sortBy,
   };
 }

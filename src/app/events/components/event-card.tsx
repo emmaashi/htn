@@ -1,12 +1,8 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,7 +51,6 @@ export type EventCardProps = {
   private_url?: string;
   related_events?: Array<{ id: number; name: string }>;
   permission: TPermission;
-  allEvents: EventCardProps[];
 };
 
 const formatDate = (timestamp: number) => {
@@ -76,25 +71,26 @@ const formatTime = (timestamp: number) => {
   });
 };
 
-const LINE_HEIGHT = 1.5;
 const MAX_LINES = 3;
 
-const useLineClamp = (text: string | undefined, maxLines: number) => {
+const useLineClamp = (text: string | undefined) => {
   const [clamped, setClamped] = useState(true);
   const [showButton, setShowButton] = useState(false);
   const containerRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     if (containerRef.current && text) {
-      const lineHeight =
-        Number.parseFloat(getComputedStyle(containerRef.current).lineHeight) ||
-        LINE_HEIGHT * 16;
-      const maxHeight = lineHeight * maxLines;
+      const lineHeight = Number.parseFloat(
+        getComputedStyle(containerRef.current).lineHeight,
+      );
+      const maxHeight = lineHeight * MAX_LINES;
       setShowButton(containerRef.current.scrollHeight > maxHeight);
     }
-  }, [text, maxLines]);
+  }, [text, clamped]);
 
-  return { clamped, setClamped, showButton, containerRef };
+  const toggleClamped = () => setClamped((prev) => !prev);
+
+  return { clamped, toggleClamped, showButton, containerRef };
 };
 
 export default function EventCard({
@@ -109,10 +105,9 @@ export default function EventCard({
   related_events = [],
   permission,
 }: EventCardProps) {
-  const { clamped, setClamped, showButton, containerRef } = useLineClamp(
-    description,
-    MAX_LINES,
-  );
+  const { clamped, toggleClamped, showButton, containerRef } =
+    useLineClamp(description);
+
   return (
     <Card
       className={`group block rounded-2xl ${eventTypeColors[event_type]} ${eventShadowColors[event_type]} transition-all duration-300 hover:shadow-lg w-full mb-4`}
@@ -120,9 +115,7 @@ export default function EventCard({
       <CardHeader className="space-y-1 pb-2">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <CardTitle className="text-2xl font-bold tracking-tight mb-2">
-              {name}
-            </CardTitle>
+            <h3 className="text-2xl font-bold tracking-tight mb-2">{name}</h3>
             <div className="flex flex-wrap gap-2">
               <Badge
                 variant="outline"
@@ -159,7 +152,14 @@ export default function EventCard({
           <div>
             <p
               ref={containerRef}
-              className={`text-sm text-muted-foreground ${clamped ? `line-clamp-${MAX_LINES}` : ""}`}
+              className={`text-sm text-muted-foreground ${
+                clamped ? "line-clamp-3 overflow-hidden text-ellipsis" : ""
+              }`}
+              style={{
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: clamped ? MAX_LINES : "unset",
+              }}
             >
               {description}
             </p>
@@ -167,74 +167,78 @@ export default function EventCard({
               <Button
                 variant="link"
                 className="h-auto p-0 text-sm"
-                onClick={() => setClamped(!clamped)}
+                onClick={toggleClamped}
               >
                 {clamped ? "Read more" : "Show less"}
               </Button>
             )}
           </div>
         )}
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <UsersIcon className="h-4 w-4" />
-            <div className="flex flex-wrap gap-2">
-              {speakers.map((speaker, index) => (
-                <Badge key={index} variant="secondary">
-                  {speaker.name}
-                </Badge>
-              ))}
+        <div className="border-t pt-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <UsersIcon className="h-4 w-4" />
+              <div className="flex flex-wrap gap-2">
+                {speakers.map((speaker, index) => (
+                  <Badge key={index} variant="secondary">
+                    {speaker.name}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {(public_url || private_url) && (
+                <div className="flex gap-2">
+                  {public_url && (
+                    <a
+                      href={public_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-sm text-primary hover:underline"
+                    >
+                      Public Link
+                      <ExternalLinkIcon className="ml-1 h-4 w-4" />
+                    </a>
+                  )}
+                  {private_url && (
+                    <a
+                      href={private_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-sm text-primary hover:underline"
+                    >
+                      Private Link
+                      <ExternalLinkIcon className="ml-1 h-4 w-4" />
+                    </a>
+                  )}
+                </div>
+              )}
+              {related_events.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">Related Events:</span>
+                  <div className="flex flex-wrap gap-2">
+                    {related_events.map((event) => (
+                      <Link
+                        key={event.id}
+                        href={`/events/${event.id}`}
+                        passHref
+                      >
+                        <Badge
+                          variant="outline"
+                          className="cursor-pointer transition-colors hover:border-primary hover:text-primary"
+                        >
+                          {event.name}
+                          <ExternalLinkIcon className="ml-1 h-3 w-3" />
+                        </Badge>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-          {(public_url || private_url) && (
-            <div className="flex gap-2 ml-auto">
-              {public_url && (
-                <a
-                  href={public_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-sm text-primary hover:underline"
-                >
-                  Public Link
-                  <ExternalLinkIcon className="ml-1 h-4 w-4" />
-                </a>
-              )}
-              {private_url && (
-                <a
-                  href={private_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-sm text-primary hover:underline"
-                >
-                  Private Link
-                  <ExternalLinkIcon className="ml-1 h-4 w-4" />
-                </a>
-              )}
-            </div>
-          )}
         </div>
       </CardContent>
-      {related_events.length > 0 && (
-        <CardFooter className="border-t pt-3">
-          <div className="w-full">
-            <p className="text-sm font-medium mb-2">Related Events:</p>
-            <div className="flex flex-wrap gap-2">
-              {related_events.map((event) => (
-                <Link key={event.id} href={`/events/${event.id}`} passHref>
-                  <Badge
-                    variant="outline"
-                    className="cursor-pointer transition-colors hover:border-primary hover:text-primary"
-                  >
-                    {event.name}{" "}
-                    {/* ✅ Display Event Name Instead of Just ID */}
-                    <ExternalLinkIcon className="ml-1 h-3 w-3" />
-                  </Badge>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </CardFooter>
-      )}
     </Card>
   );
 }

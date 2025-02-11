@@ -19,8 +19,14 @@ export default function EventsPage() {
     setLoggedIn(storedLoggedIn);
   }, []);
 
-  const { filterEvents, setSelectedFilters, setSortBy, totalAvailableEvents } =
-    useEventFilters(events, loggedIn, searchTerm);
+  const {
+    filterEvents,
+    setSelectedFilters,
+    setSortBy,
+    totalAvailableEvents,
+    sortBy,
+  } = useEventFilters(events, loggedIn, searchTerm);
+
   const filteredEvents = filterEvents();
 
   if (loading) return <p>Loading...</p>;
@@ -28,15 +34,15 @@ export default function EventsPage() {
 
   return (
     <div className="relative flex min-h-screen">
-      <div className="absolute inset-0">
+      <div className="fixed inset-0 z-0">
         <div
-          className="absolute inset-0 bg-no-repeat bg-center bg-contain bg-fixed"
+          className="absolute inset-0 bg-no-repeat bg-center bg-contain"
           style={{ backgroundImage: `url(${build.src})` }}
         ></div>
         <div className="absolute inset-0 bg-white/70"></div>
       </div>
 
-      <div className="relative flex w-full">
+      <div className="relative z-10 flex w-full">
         <div className="sticky top-0 h-screen">
           <SidebarNavigation
             onFilterChange={setSelectedFilters}
@@ -44,22 +50,32 @@ export default function EventsPage() {
           />
         </div>
 
-        <div className="flex-1 p-4 min-h-screen">
-          <h1 className="text-5xl font-bold text-left mb-4 ml-16 mt-14">
-            Events
-          </h1>
-          <div className="flex items-center gap-x-4 ml-16">
-            <SearchBar
-              searchTerm={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <SortDropdown sortBy={"start_time"} onSortChange={setSortBy} />
-          </div>
-          <p className="ml-16 mt-3 mb-4">
-            Showing {filteredEvents.length} out of {totalAvailableEvents} events
-          </p>
+        <div className="flex-1 flex flex-col min-h-screen w-full">
+          <div className="flex-1 p-4">
+            <h1 className="text-5xl font-bold text-left mb-4 ml-16 mt-14">
+              Events
+            </h1>
+            <div className="flex items-center justify-between gap-x-4 ml-16 pr-16">
+              <SearchBar
+                searchTerm={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <div className="flex items-center gap-x-2">
+                <p className="text-sm font-medium text-gray-700">Sort by</p>
+                <SortDropdown sortBy={sortBy} onSortChange={setSortBy} />
+              </div>
+            </div>
+            <p className="ml-16 mt-3 mb-4">
+              Showing {filteredEvents.length} out of {totalAvailableEvents}{" "}
+              events
+            </p>
 
-          <EventsList events={filteredEvents} />
+            <div className="w-full min-h-[600px]">
+              <EventsList events={filteredEvents} />
+              <EventsList events={filteredEvents} />
+              <EventsList events={filteredEvents} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
