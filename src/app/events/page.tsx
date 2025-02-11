@@ -72,8 +72,6 @@ export default function EventsPage() {
 
             <div className="w-full min-h-[600px]">
               <EventsList events={filteredEvents} />
-              <EventsList events={filteredEvents} />
-              <EventsList events={filteredEvents} />
             </div>
           </div>
         </div>
