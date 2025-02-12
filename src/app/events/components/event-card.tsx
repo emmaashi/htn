@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -239,8 +238,9 @@ export default function EventCard({
             <div className="flex flex-wrap gap-2">
               {relatedEvents.map((event) => (
                 <Badge
+                  key={event?.id}
                   variant="outline"
-                  onClick={(e) => scrollToEvent(event?.id!)}
+                  onClick={() => event?.id && scrollToEvent(event.id)}
                   className={`cursor-pointer transition-colors hover:border-primary hover:text-primary ${eventTypeColors[event.event_type]}`}
                 >
                   {event?.name}
