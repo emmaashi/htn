@@ -31,6 +31,7 @@ export default function LoginForm() {
     }
   };
 
+  // function to copy login details to clipboard
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success(`Copied "${text}" to clipboard.`);

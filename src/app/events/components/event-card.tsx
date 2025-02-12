@@ -96,6 +96,7 @@ const useLineClamp = (text: string | undefined) => {
 };
 
 export default function EventCard({
+  id,
   name,
   event_type,
   start_time,
@@ -119,8 +120,17 @@ export default function EventCard({
     ) // find the event by it's id
     .filter((event) => event !== undefined); // remove undefined events
 
+  // when related event is clicked, scroll to the corresponding card
+  const scrollToEvent = (eventId: number) => {
+    const eventElement = document.getElementById(`event-${eventId}`);
+    if (eventElement) {
+      eventElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
   return (
     <Card
+      id={`event-${id}`}
       className={`group block rounded-2xl ${eventTypeColors[event_type]} ${eventShadowColors[event_type]} transition-all duration-300 hover:shadow-lg w-full mb-4`}
     >
       <CardHeader className="space-y-1 pb-2">
@@ -228,15 +238,14 @@ export default function EventCard({
             <span className="text-sm font-medium">Related Events:</span>
             <div className="flex flex-wrap gap-2">
               {relatedEvents.map((event) => (
-                <Link key={event?.id} href={`/events/${event?.id}`} passHref>
-                  <Badge
-                    variant="outline"
-                    className="cursor-pointer transition-colors hover:border-primary hover:text-primary"
-                  >
-                    {event?.name}
-                    <ExternalLinkIcon className="ml-1 h-3 w-3" />
-                  </Badge>
-                </Link>
+                <Badge
+                  variant="outline"
+                  onClick={(e) => scrollToEvent(event?.id!)}
+                  className={`cursor-pointer transition-colors hover:border-primary hover:text-primary ${eventTypeColors[event.event_type]}`}
+                >
+                  {event?.name}
+                  <ExternalLinkIcon className="ml-1 h-3 w-3" />
+                </Badge>
               ))}
             </div>
           </div>
