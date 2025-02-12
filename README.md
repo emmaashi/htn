@@ -1,5 +1,5 @@
 # Hack the North 2025 Frontend Challenge
----
+
 A **scalable and user-friendly event listing platform** for Hack the North, built using **Next.js, TypeScript, GraphQL, Tailwind CSS, and Shadcn UI**. This web app allows users to **browse, search, and filter hackathon events**, with role-based access control for **public and private events**.
 
 ### ✅  **Authentication & Role-Based Access**
