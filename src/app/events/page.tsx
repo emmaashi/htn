@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useEvents } from "./actions/useEvents";
 import { useEventFilters } from "./actions/useEventFilters";
-import { SidebarNavigation } from "./components/Sidebar"
+import { SidebarNavigation } from "./components/sidebar";
 import EventsList from "./components/events-list";
 import { SearchBar } from "./components/search-bar";
 import { SortDropdown } from "./components/sort-dropdown";
@@ -42,7 +42,7 @@ export default function EventsPage() {
         <div className="absolute inset-0 bg-white/70"></div>
       </div>
 
-      <div className="relative z-10 flex w-full">
+      <div className="relative inset-0 z-10 flex w-full">
         <div className="sticky top-0 h-screen">
           <SidebarNavigation
             onFilterChange={setSelectedFilters}
@@ -70,7 +70,7 @@ export default function EventsPage() {
               events
             </p>
 
-            <div className="w-full min-h-[600px]">
+            <div className="w-full min-h-[600px] flex">
               <EventsList events={filteredEvents} />
             </div>
           </div>
