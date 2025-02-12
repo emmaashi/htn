@@ -12,7 +12,7 @@ A **scalable and user-friendly event listing platform** for Hack the North, buil
 - **Real-Time Search & Filtering:** Easily find events using a **search bar** and **category filters**.
 - **Sorting:** Events are **sorted by start time by default**, with options to reorder.
 
-To view the full write up, view: https://www.notion.so/Hack-the-North-Frontend-Challenge-Emma-Shi-18f87cadf20c800e9846ce43bf3f47e6?pvs=4
+To view the full write up: https://www.notion.so/Hack-the-North-Frontend-Challenge-Emma-Shi-18f87cadf20c800e9846ce43bf3f47e6?pvs=4
 
 <img width="1161" alt="Screenshot 2025-02-12 at 4 04 58 PM" src="https://github.com/user-attachments/assets/bd982317-4ddb-48ed-a400-5e44c109b0a4" />
 
@@ -25,6 +25,5 @@ git clone https://github.com/emmaashi/htn-frontend.git
 cd htn-frontend
 npm install
 npm run dev
+
 The app will be available at http://localhost:3000
-
-
